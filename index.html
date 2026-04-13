@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiblioDigital — Biblioteca Digital Inclusiva</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #1a6b4a;
+    --verde-claro: #e8f5ee;
+    --verde-medio: #2d8f63;
+    --crema: #faf8f3;
+    --crema-oscuro: #f0ece2;
+    --texto: #1c1c1c;
+    --texto-suave: #5a5a5a;
+    --borde: #d8d2c4;
+    --blanco: #ffffff;
+    --amarillo: #f5c842;
+    --rojo-suave: #e05c5c;
+    --font-titulo: 'Lora', serif;
+    --font-cuerpo: 'DM Sans', sans-serif;
+    --radio: 12px;
+    --radio-grande: 20px;
+    --sombra: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-cuerpo);
+    background: var(--crema);
+    color: var(--texto);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ACCESIBILIDAD: barra superior */
+  .barra-accesibilidad {
+    background: var(--verde);
+    padding: 8px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .barra-accesibilidad span {
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+  }
+  .btn-acc {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--font-cuerpo);
+    transition: background 0.2s;
+  }
+  .btn-acc:hover { background: rgba(255,255,255,0.25); }
+  .btn-acc.activo { background: white; color: var(--verde); font-weight: 500; }
+
+  /* NAVBAR */
+  nav {
+    background: var(--blanco);
+    border-bottom: 1.5px solid var(--borde);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .logo-icono {
+    width: 36px; height: 36px;
+    background: var(--verde);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-texto {
+    font-family: var(--font-titulo);
+    font-size: 20px;
+    color: var(--texto);
+    font-weight: 600;
+  }
+  .logo-texto span { color: var(--verde-medio); }
+  .nav-links {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--texto-suave);
+    padding: 8px 16px;
+    border-radius: var(--radio);
+    font-size: 15px;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover { background: var(--verde-claro); color: var(--verde); }
+  .nav-links a.activo { background: var(--verde-claro); color: var(--verde); font-weight: 500; }
+  .btn-sesion {
+    background: var(--verde);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radio);
+    font-size: 15px;
+    cursor: pointer;
+    font-family: var(--font-cuerpo);
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .btn-sesion:hover { background: var(--verde-medio); }
+
+  /* HERO */
+  .hero {
+    background: var(--blanco);
+    padding: 64px 32px 48px;
+    text-align: center;
+    border-bottom: 1px solid var(--borde);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--verde-claro);
+    color: var(--verde);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: var(--font-titulo);
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    color: var(--texto);
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero h1 em { color: var(--verde-medio); font-style: normal; }
+  .hero p {
+    font-size: 17px;
+    color: var(--texto-suave);
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+
+  /* BUSCADOR */
+  .buscador-wrap {
+    max-width: 600px;
+    margin: 0 auto 16px;
+    position: relative;
+  }
+  .buscador {
+    width: 100%;
+    padding: 18px 60px 18px 20px;
+    font-size: 16px;
+    border: 2px solid var(--borde);
+    border-radius: var(--radio-grande);
+    background: var(--crema);
+    font-family: var(--font-cuerpo);
+    color: var(--texto);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .buscador:focus {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 4px rgba(26,107,74,0.1);
+    background: var(--blanco);
+  }
+  .buscador::placeholder { color: #aaa; }
+  .btn-buscar {
+    position: absolute;
+    right: 8px; top: 50%;
+    transform: translateY(-50%);
+    background: var(--verde);
+    border: none;
+    color: white;
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .btn-buscar:hover { background: var(--verde-medio); }
+  .categorias-rapidas {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cat-pill {
+    background: var(--crema-oscuro);
+    border: 1px solid var(--borde);
+    color: var(--texto-suave);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-cuerpo);
+  }
+  .cat-pill:hover { background: var(--verde-claro); color: var(--verde); border-color: var(--verde); }
+
+  /* ESTADO VISIBLE */
+  .estado-sistema {
+    background: var(--verde-claro);
+    border: 1px solid #a8d5bc;
+    border-radius: var(--radio);
+    padding: 12px 20px;
+    margin: 24px 32px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--verde);
+    animation: fadeIn 0.4s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* SECCIÓN CATÁLOGO */
+  .seccion {
+    padding: 48px 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .seccion-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .seccion-titulo h2 {
+    font-family: var(--font-titulo);
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .ver-todos {
+    color: var(--verde);
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    font-family: var(--font-cuerpo);
+  }
+
+  /* GRID DE LIBROS */
+  .libros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+  }
+  .libro-card {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio-grande);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .libro-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sombra);
+  }
+  .libro-portada {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    position: relative;
+  }
+  .libro-disponible {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: var(--verde);
+    color: white;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .libro-prestado {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: var(--amarillo);
+    color: #5a3e00;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .libro-info {
+    padding: 14px;
+    border-top: 1px solid var(--crema-oscuro);
+  }
+  .libro-titulo {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 3px;
+    line-height: 1.3;
+  }
+  .libro-autor {
+    font-size: 12px;
+    color: var(--texto-suave);
+    margin-bottom: 10px;
+  }
+  .libro-btns {
+    display: flex;
+    gap: 6px;
+  }
+  .btn-leer {
+    flex: 1;
+    background: var(--verde);
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--font-cuerpo);
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .btn-leer:hover { background: var(--verde-medio); }
+  .btn-prestar {
+    flex: 1;
+    background: var(--crema-oscuro);
+    color: var(--texto);
+    border: 1px solid var(--borde);
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--font-cuerpo);
+    transition: all 0.2s;
+  }
+  .btn-prestar:hover { background: var(--verde-claro); color: var(--verde); border-color: var(--verde); }
+
+  /* MIS PRÉSTAMOS */
+  .prestamos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .prestamo-item {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .prestamo-icono { font-size: 28px; }
+  .prestamo-info { flex: 1; }
+  .prestamo-titulo { font-weight: 500; font-size: 15px; }
+  .prestamo-fecha { font-size: 13px; color: var(--texto-suave); }
+  .progreso-barra {
+    height: 6px;
+    background: var(--crema-oscuro);
+    border-radius: 3px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .progreso-fill {
+    height: 100%;
+    background: var(--verde);
+    border-radius: 3px;
+    transition: width 0.4s;
+  }
+  .btn-devolver {
+    background: transparent;
+    border: 1px solid var(--rojo-suave);
+    color: var(--rojo-suave);
+    padding: 8px 16px;
+    border-radius: var(--radio);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--font-cuerpo);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-devolver:hover { background: #fdf0f0; }
+
+  /* FILTROS */
+  .filtros {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .filtro-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--borde);
+    background: var(--blanco);
+    color: var(--texto-suave);
+    font-size: 14px;
+    cursor: pointer;
+    font-family: var(--font-cuerpo);
+    transition: all 0.2s;
+  }
+  .filtro-btn.activo { background: var(--verde); color: white; border-color: var(--verde); }
+  .filtro-btn:hover:not(.activo) { background: var(--verde-claro); color: var(--verde); border-color: var(--verde); }
+
+  /* MODAL DETALLE */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal {
+    background: var(--blanco);
+    border-radius: var(--radio-grande);
+    max-width: 480px;
+    width: 100%;
+    padding: 32px;
+    position: relative;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-cerrar {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--crema-oscuro);
+    border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--texto-suave);
+  }
+  .modal-portada { font-size: 56px; margin-bottom: 16px; text-align: center; }
+  .modal-titulo { font-family: var(--font-titulo); font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .modal-autor { color: var(--texto-suave); font-size: 14px; margin-bottom: 16px; }
+  .modal-desc { font-size: 15px; line-height: 1.7; color: var(--texto-suave); margin-bottom: 24px; }
+  .modal-btns { display: flex; flex-direction: column; gap: 10px; }
+  .btn-grande {
+    width: 100%;
+    padding: 14px;
+    border-radius: var(--radio);
+    font-size: 16px;
+    cursor: pointer;
+    font-family: var(--font-cuerpo);
+    font-weight: 500;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-grande.primario { background: var(--verde); color: white; }
+  .btn-grande.primario:hover { background: var(--verde-medio); }
+  .btn-grande.secundario { background: var(--crema-oscuro); color: var(--texto); border: 1px solid var(--borde); }
+  .btn-grande.secundario:hover { background: var(--verde-claro); color: var(--verde); }
+  .btn-grande.peligro { background: transparent; color: var(--rojo-suave); border: 1px solid var(--rojo-suave); }
+  .btn-grande.peligro:hover { background: #fdf0f0; }
+
+  /* NOTIFICACIÓN TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--texto);
+    color: white;
+    padding: 14px 24px;
+    border-radius: var(--radio);
+    font-size: 15px;
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .toast.visible { transform: translateX(-50%) translateY(0); }
+  .toast.exito { background: var(--verde); }
+
+  /* FOOTER */
+  footer {
+    background: var(--texto);
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    padding: 24px 32px;
+    font-size: 14px;
+  }
+  footer strong { color: white; }
+
+  /* MODO OSCURO */
+  body.oscuro {
+    --crema: #1a1a1a;
+    --crema-oscuro: #252525;
+    --blanco: #2a2a2a;
+    --texto: #f0ece2;
+    --texto-suave: #9a9a9a;
+    --borde: #3a3a3a;
+    --verde-claro: #0d2e1e;
+  }
+
+  /* TEXTO GRANDE */
+  body.texto-grande { font-size: 20px; }
+  body.texto-grande .buscador { font-size: 20px; }
+  body.texto-grande .libro-titulo { font-size: 16px; }
+  body.texto-grande .btn-leer, body.texto-grande .btn-prestar { font-size: 15px; padding: 10px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    nav { padding: 0 16px; }
+    .nav-links { display: none; }
+    .hero { padding: 40px 16px 32px; }
+    .seccion { padding: 32px 16px; }
+    .libros-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- BARRA DE ACCESIBILIDAD -->
+<div class="barra-accesibilidad">
+  <span>Accesibilidad:</span>
+  <button class="btn-acc" onclick="cambiarTexto(this)" title="Aumentar tamaño de letra">A+ Texto grande</button>
+  <button class="btn-acc" onclick="cambiarModo(this)" title="Cambiar tema">🌙 Modo oscuro</button>
+  <button class="btn-acc" onclick="leerPagina()" title="Leer página en voz alta">🔊 Leer en voz alta</button>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icono">📚</div>
+    <span class="logo-texto">Biblio<span>Digital</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#catalogo" class="activo">Catálogo</a></li>
+    <li><a href="#prestamos">Mis préstamos</a></li>
+    <li><a href="#ayuda">Ayuda</a></li>
+  </ul>
+  <button class="btn-sesion">Iniciar sesión</button>
+</nav>
+
+<!-- ESTADO DEL SISTEMA (visible) -->
+<div class="estado-sistema" id="estado-sistema" style="display:none;">
+  <span id="estado-icono">✅</span>
+  <span id="estado-texto"></span>
+</div>
+
+<!-- HERO / BUSCADOR -->
+<section class="hero">
+  <div class="hero-badge">📖 Biblioteca digital gratuita</div>
+  <h1>Lee y aprende a tu <em>propio ritmo</em></h1>
+  <p>Miles de libros digitales disponibles para todos, sin importar tu experiencia con la tecnología.</p>
+
+  <div class="buscador-wrap">
+    <input class="buscador" type="search" id="input-buscar" placeholder="¿Qué libro estás buscando?" aria-label="Buscar libros" oninput="filtrarLibros(this.value)">
+    <button class="btn-buscar" onclick="filtrarLibros(document.getElementById('input-buscar').value)" aria-label="Buscar">🔍</button>
+  </div>
+
+  <div class="categorias-rapidas">
+    <button class="cat-pill" onclick="filtrarCategoria('Novelas')">📖 Novelas</button>
+    <button class="cat-pill" onclick="filtrarCategoria('Educación')">🎓 Educación</button>
+    <button class="cat-pill" onclick="filtrarCategoria('Infantil')">🌟 Infantil</button>
+    <button class="cat-pill" onclick="filtrarCategoria('Ciencia')">🔬 Ciencia</button>
+    <button class="cat-pill" onclick="filtrarCategoria('')">Ver todos</button>
+  </div>
+</section>
+
+<!-- CATÁLOGO -->
+<div class="seccion" id="catalogo">
+  <div class="seccion-titulo">
+    <h2>📚 Catálogo de libros</h2>
+  </div>
+
+  <!-- FILTROS AVANZADOS -->
+  <div class="filtros">
+    <button class="filtro-btn activo" onclick="aplicarFiltro(this,'todos')">Todos</button>
+    <button class="filtro-btn" onclick="aplicarFiltro(this,'disponible')">Disponibles</button>
+    <button class="filtro-btn" onclick="aplicarFiltro(this,'Novelas')">Novelas</button>
+    <button class="filtro-btn" onclick="aplicarFiltro(this,'Educación')">Educación</button>
+    <button class="filtro-btn" onclick="aplicarFiltro(this,'Infantil')">Infantil</button>
+    <button class="filtro-btn" onclick="aplicarFiltro(this,'Ciencia')">Ciencia</button>
+  </div>
+
+  <div class="libros-grid" id="libros-grid"></div>
+</div>
+
+<!-- MIS PRÉSTAMOS -->
+<div class="seccion" id="prestamos" style="background: var(--crema-oscuro); border-radius: 24px; margin: 0 32px 32px;">
+  <div class="seccion-titulo">
+    <h2>📋 Mis préstamos activos</h2>
+  </div>
+  <div class="prestamos-lista" id="prestamos-lista">
+    <p style="color: var(--texto-suave); font-size: 15px;">No tienes préstamos activos. ¡Explora el catálogo y pide tu primer libro!</p>
+  </div>
+</div>
+
+<!-- MODAL DETALLE LIBRO -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo-txt" onclick="cerrarModalFuera(event)">
+  <div class="modal">
+    <button class="modal-cerrar" onclick="cerrarModal()" aria-label="Cerrar">✕</button>
+    <div class="modal-portada" id="modal-portada"></div>
+    <div class="modal-titulo" id="modal-titulo-txt"></div>
+    <div class="modal-autor" id="modal-autor"></div>
+    <div class="modal-desc" id="modal-desc"></div>
+    <div class="modal-btns">
+      <button class="btn-grande primario" id="btn-modal-leer" onclick="accionLeer()">📖 Leer ahora</button>
+      <button class="btn-grande secundario" id="btn-modal-prestar" onclick="accionPrestar()">📤 Solicitar préstamo</button>
+      <button class="btn-grande secundario" onclick="accionDescargar()">⬇️ Descargar</button>
+      <button class="btn-grande peligro" onclick="cerrarModal()">← Volver al catálogo</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICACIÓN -->
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>BiblioDigital</strong> — Biblioteca Digital Inclusiva · Grupo 3 · Diseño Web Centrado en el Usuario
+</footer>
+
+<script>
+const libros = [
+  { id:1, titulo:"Cien años de soledad", autor:"Gabriel García Márquez", emoji:"🌿", categoria:"Novelas", disponible:true, desc:"Una saga épica de la familia Buendía en el pueblo de Macondo. Una obra maestra del realismo mágico latinoamericano." },
+  { id:2, titulo:"El principito", autor:"Antoine de Saint-Exupéry", emoji:"🌹", categoria:"Infantil", disponible:true, desc:"Un clásico atemporal sobre la amistad, el amor y la vida visto desde los ojos de un pequeño príncipe de otro planeta." },
+  { id:3, titulo:"Breve historia del tiempo", autor:"Stephen Hawking", emoji:"🌌", categoria:"Ciencia", disponible:false, desc:"Una exploración accesible de los grandes misterios del universo: el Big Bang, los agujeros negros y la naturaleza del tiempo." },
+  { id:4, titulo:"Cómo aprender rápido", autor:"Barbara Oakley", emoji:"🧠", categoria:"Educación", disponible:true, desc:"Técnicas basadas en neurociencia para aprender cualquier materia de forma efectiva y retener conocimiento a largo plazo." },
+  { id:5, titulo:"Don Quijote de la Mancha", autor:"Miguel de Cervantes", emoji:"⚔️", categoria:"Novelas", disponible:true, desc:"La primera novela moderna de la literatura occidental. La historia de un hidalgo que enloquece leyendo libros de caballería." },
+  { id:6, titulo:"Matemáticas para todos", autor:"Keith Devlin", emoji:"📐", categoria:"Educación", disponible:true, desc:"Una guía amigable y sin fórmulas intimidantes para entender las matemáticas cotidianas y su presencia en el mundo real." },
+  { id:7, titulo:"La selva de los cuentos", autor:"Varios autores", emoji:"🌳", categoria:"Infantil", disponible:true, desc:"Colección de cuentos cortos con ilustraciones para niños de todas las edades. Perfecto para leer en familia." },
+  { id:8, titulo:"Sapiens", autor:"Yuval Noah Harari", emoji:"🦴", categoria:"Ciencia", disponible:true, desc:"La historia de la humanidad contada de forma apasionante: cómo los humanos llegamos a dominar el planeta." },
+];
+
+let prestamos = [];
+let libroActual = null;
+let filtroActual = 'todos';
+let busquedaActual = '';
+
+function renderLibros() {
+  const grid = document.getElementById('libros-grid');
+  let filtrados = libros.filter(l => {
+    const matchBusqueda = l.titulo.toLowerCase().includes(busquedaActual.toLowerCase()) || l.autor.toLowerCase().includes(busquedaActual.toLowerCase());
+    const matchFiltro = filtroActual === 'todos' || (filtroActual === 'disponible' ? l.disponible : l.categoria === filtroActual);
+    return matchBusqueda && matchFiltro;
+  });
+  if (filtrados.length === 0) {
+    grid.innerHTML = '<p style="color:var(--texto-suave);grid-column:1/-1;padding:24px 0;">No se encontraron libros con esa búsqueda.</p>';
+    return;
+  }
+  grid.innerHTML = filtrados.map(l => `
+    <div class="libro-card" onclick="abrirModal(${l.id})" role="button" tabindex="0" aria-label="Ver detalles de ${l.titulo}">
+      <div class="libro-portada" style="background:${colorCategoria(l.categoria)}">
+        ${l.emoji}
+        ${l.disponible ? '<span class="libro-disponible">Disponible</span>' : '<span class="libro-prestado">Prestado</span>'}
+      </div>
+      <div class="libro-info">
+        <div class="libro-titulo">${l.titulo}</div>
+        <div class="libro-autor">${l.autor}</div>
+        <div class="libro-btns">
+          <button class="btn-leer" onclick="event.stopPropagation();accionLeerDirecto(${l.id})">📖 Leer</button>
+          <button class="btn-prestar" onclick="event.stopPropagation();accionPrestarDirecto(${l.id})" ${!l.disponible ? 'disabled style="opacity:0.5;cursor:not-allowed"':''}>📤 Prestar</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function colorCategoria(cat) {
+  const colores = { Novelas:'#f0f4e8', Infantil:'#fff4e0', Ciencia:'#e8f0f8', Educación:'#f0e8f8' };
+  return colores[cat] || '#f5f5f5';
+}
+
+function filtrarLibros(val) {
+  busquedaActual = val;
+  renderLibros();
+}
+
+function filtrarCategoria(cat) {
+  busquedaActual = '';
+  document.getElementById('input-buscar').value = '';
+  filtroActual = cat || 'todos';
+  renderLibros();
+}
+
+function aplicarFiltro(btn, filtro) {
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('activo'));
+  btn.classList.add('activo');
+  filtroActual = filtro;
+  renderLibros();
+}
+
+function abrirModal(id) {
+  const l = libros.find(x => x.id === id);
+  libroActual = l;
+  document.getElementById('modal-portada').textContent = l.emoji;
+  document.getElementById('modal-titulo-txt').textContent = l.titulo;
+  document.getElementById('modal-autor').textContent = '✍️ ' + l.autor + ' · ' + l.categoria;
+  document.getElementById('modal-desc').textContent = l.desc;
+  document.getElementById('btn-modal-prestar').disabled = !l.disponible;
+  document.getElementById('btn-modal-prestar').style.opacity = l.disponible ? '1' : '0.5';
+  document.getElementById('modal').classList.add('visible');
+}
+
+function cerrarModal() {
+  document.getElementById('modal').classList.remove('visible');
+  libroActual = null;
+}
+
+function cerrarModalFuera(e) {
+  if (e.target.id === 'modal') cerrarModal();
+}
+
+function accionLeer() {
+  mostrarToast('✅ Abriendo "' + libroActual.titulo + '" en el lector...', 'exito');
+  mostrarEstado('✅', 'Iniciando lectura de: ' + libroActual.titulo);
+  cerrarModal();
+}
+
+function accionLeerDirecto(id) {
+  const l = libros.find(x => x.id === id);
+  mostrarToast('✅ Abriendo "' + l.titulo + '"...', 'exito');
+  mostrarEstado('📖', 'Leyendo: ' + l.titulo);
+}
+
+function accionPrestar() {
+  if (!libroActual.disponible) return;
+  const ya = prestamos.find(p => p.id === libroActual.id);
+  if (ya) { mostrarToast('⚠️ Ya tienes este libro en préstamo.'); cerrarModal(); return; }
+  prestamos.push({...libroActual, dias: 7, progreso: 0});
+  libroActual.disponible = false;
+  mostrarToast('✅ Préstamo registrado. Tienes 7 días para leerlo.', 'exito');
+  mostrarEstado('✅', 'Préstamo exitoso: "' + libroActual.titulo + '". Vence en 7 días.');
+  renderLibros();
+  renderPrestamos();
+  cerrarModal();
+}
+
+function accionPrestarDirecto(id) {
+  const l = libros.find(x => x.id === id);
+  if (!l.disponible) return;
+  const ya = prestamos.find(p => p.id === l.id);
+  if (ya) { mostrarToast('⚠️ Ya tienes este libro en préstamo.'); return; }
+  prestamos.push({...l, dias: 7, progreso: 20});
+  l.disponible = false;
+  mostrarToast('✅ Préstamo registrado. Tienes 7 días.', 'exito');
+  mostrarEstado('✅', '"' + l.titulo + '" prestado correctamente. Vence en 7 días.');
+  renderLibros();
+  renderPrestamos();
+}
+
+function accionDescargar() {
+  mostrarToast('⬇️ Descargando "' + libroActual.titulo + '"...');
+  mostrarEstado('⬇️', 'Descargando: ' + libroActual.titulo);
+  cerrarModal();
+}
+
+function devolverLibro(id) {
+  const idx = prestamos.findIndex(p => p.id === id);
+  const p = prestamos[idx];
+  prestamos.splice(idx, 1);
+  const lb = libros.find(x => x.id === id);
+  if (lb) lb.disponible = true;
+  mostrarToast('✅ "' + p.titulo + '" devuelto correctamente.', 'exito');
+  mostrarEstado('↩️', '"' + p.titulo + '" devuelto. ¡Gracias!');
+  renderLibros();
+  renderPrestamos();
+}
+
+function renderPrestamos() {
+  const cont = document.getElementById('prestamos-lista');
+  if (prestamos.length === 0) {
+    cont.innerHTML = '<p style="color:var(--texto-suave);font-size:15px;">No tienes préstamos activos. ¡Explora el catálogo y pide tu primer libro!</p>';
+    return;
+  }
+  cont.innerHTML = prestamos.map(p => `
+    <div class="prestamo-item">
+      <div class="prestamo-icono">${p.emoji}</div>
+      <div class="prestamo-info">
+        <div class="prestamo-titulo">${p.titulo}</div>
+        <div class="prestamo-fecha">Vence en ${p.dias} días · ${p.autor}</div>
+        <div class="progreso-barra"><div class="progreso-fill" style="width:${p.progreso}%"></div></div>
+      </div>
+      <button class="btn-devolver" onclick="devolverLibro(${p.id})">↩ Devolver</button>
+    </div>
+  `).join('');
+}
+
+function mostrarToast(msg, tipo) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast visible' + (tipo === 'exito' ? ' exito' : '');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('visible'), 3500);
+}
+
+function mostrarEstado(icono, texto) {
+  const s = document.getElementById('estado-sistema');
+  document.getElementById('estado-icono').textContent = icono;
+  document.getElementById('estado-texto').textContent = texto;
+  s.style.display = 'flex';
+  clearTimeout(window._estadoTimer);
+  window._estadoTimer = setTimeout(() => { s.style.display = 'none'; }, 5000);
+}
+
+function cambiarTexto(btn) {
+  document.body.classList.toggle('texto-grande');
+  btn.classList.toggle('activo');
+}
+
+function cambiarModo(btn) {
+  document.body.classList.toggle('oscuro');
+  btn.classList.toggle('activo');
+  btn.textContent = document.body.classList.contains('oscuro') ? '☀️ Modo claro' : '🌙 Modo oscuro';
+}
+
+function leerPagina() {
+  if ('speechSynthesis' in window) {
+    const texto = "Bienvenido a BiblioDigital. Tienes " + libros.length + " libros disponibles en el catálogo. Puedes buscar libros, solicitarlos en préstamo, o leerlos directamente en línea.";
+    const u = new SpeechSynthesisUtterance(texto);
+    u.lang = 'es-ES';
+    speechSynthesis.speak(u);
+    mostrarToast('🔊 Leyendo la página en voz alta...');
+  } else {
+    mostrarToast('Tu navegador no soporta lectura en voz alta.');
+  }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+
+renderLibros();
+renderPrestamos();
+</script>
+</body>
+</html>
